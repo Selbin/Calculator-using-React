@@ -8,30 +8,39 @@ class App extends Component {
 
     this.state={
       current : '0',
-      previous : [''],
-      nextIsReset: false 
+      previous : [],
+      nextIsReset: false,
+      opflag: false
     }
   }  
-  reset = ()=> {
-    this.setState({current :'0',previous:[]})
-  }
+
+  reset = () => this.setState({current :'0',previous:[]})
+  
   addToCurrent=(symbol)=>{
-    console.log(this.state.current);
-    if(["+","-","/","*"].indexOf(symbol)> -1){
-      let {previous}=this.state
-      previous.push(this.state.current + symbol);
-      this.setState({previous, nextIsReset:true})  
-    }
-    else{
-      if((this.state.current === "0" && symbol != ".") ||this.state.nextIsReset){
-        this.setState({current:symbol, nextIsReset: false});
+    
+
+    if(["+","-","/","*"].indexOf(symbol) != -1){
+      let { previous, opflag} = this.state
+      if(!opflag){
+      previous.push(this.state.current , symbol);
+      this.setState({previous, nextIsReset:true,opflag:true});
+      //console.log((previous));
       }
       else{
+        previous[previous.length-1]=symbol;
+        this.setState({previous, nextIsReset:true});
 
+      }
       
-      this.setState({current:this.state.current+symbol});
+    } else {
+      
+      if((this.state.current === "0" && symbol != ".") || this.state.nextIsReset){
+        this.setState({current:symbol, nextIsReset: false,opflag:false});
+      } else {
+      this.setState({current:this.state.current+symbol, opflag:false});
       }
     }
+
   }
   calculate = (symbol)=>{
     let {current,previous,nextIsReset}=this.state;
